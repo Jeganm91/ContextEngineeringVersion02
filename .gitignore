@@ -1,0 +1,21 @@
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime files
+*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

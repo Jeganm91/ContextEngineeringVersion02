@@ -1,0 +1,8 @@
+{
+  "catalog_name": "Premium Software Pricing Catalog",
+  "version": "3.4",
+  "effective_date": "2026-02-20",
+  "summary": "Design Suite Pro is priced at 42 USD per seat per month with a 10-seat minimum order. Analytics Platform Enterprise is 65 USD per seat per month, with volume discounts available above 50 seats. Pricing is updated monthly based on vendor agreements and is not reflected in the static policy documents.",
+  "last_reviewed_by": "IT Procurement Team",
+  "source_system": "Vendor Pricing Feed (live, external to Azure AI Search)"
+}

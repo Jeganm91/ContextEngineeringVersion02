@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <title>RAG App Configuration</title>
+  <style>
+    body { font-family: monospace; max-width: 900px; margin: 30px auto; background:#0e0e0e; color:#eee; }
+    label { display:block; margin-top:14px; color:#8cf; }
+    select, input[type=number], textarea { width:100%; box-sizing:border-box; background:#1a1a1a; color:#eee; border:1px solid #444; padding:6px; }
+    textarea { height:220px; }
+    button { background:#2a6; color:#fff; border:none; padding:8px 16px; cursor:pointer; margin-top:16px; }
+    a { color:#8cf; }
+  </style>
+</head>
+<body>
+  <p><a href="/">&larr; Back to app</a></p>
+  <h1>Retrieval &amp; Context Configuration</h1>
+  <form method="post" action="/config">
+
+    <label>Search Type</label>
+    <select name="search_type">
+      <option value="SEMANTIC" {% if state.retrieval_config.search_type == 'SEMANTIC' %}selected{% endif %}>Semantic</option>
+      <option value="HYBRID" {% if state.retrieval_config.search_type == 'HYBRID' %}selected{% endif %}>Hybrid</option>
+    </select>
+
+    <label>Number of Results</label>
+    <input type="number" name="number_of_results" min="1" max="20" value="{{ state.retrieval_config.number_of_results }}">
+
+    <label>
+      <input type="checkbox" name="reranking_enabled" {% if state.retrieval_config.reranking_enabled %}checked{% endif %}>
+      Enable Reranking
+    </label>
+
+    <label>
+      <input type="checkbox" name="memory_enabled" {% if state.memory_enabled %}checked{% endif %}>
+      Enable Multi-Turn Memory (reuse session across turns)
+    </label>
+
+    <label>System / Context Prompt Template (use $search_results$ and $query$)</label>
+    <textarea name="system_prompt">{{ state.system_prompt }}</textarea>
+
+    <button type="submit">Save Configuration</button>
+  </form>
+</body>
+</html>
