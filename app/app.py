@@ -348,10 +348,12 @@ def run_rag_query(query: str, session_id: str = None, user_id: str = None):
         mcp_res = call_mcp_tool(query)
         result["mcp_output"] = mcp_res
         # TC11 -- Untrusted Tool Output
-        if mcp_res and mcp_res.get("status") == "success" and mcp_res.get("content"):
-            result["answer"] = mcp_res["content"]
+        # BUG: the response is trusted as-is with no check that it actually
+        # succeeded -- a malformed or error-shaped MCP response still gets
+        # treated as a valid answer
+        if mcp_res:
+            result["answer"] = mcp_res.get("content", str(mcp_res))
             return result, 200
-        # else: fall through to standard retrieval instead of trusting a bad tool response
 
     try:
         citations = search_azure_knowledge_base(query)
