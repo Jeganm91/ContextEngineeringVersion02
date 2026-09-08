@@ -51,7 +51,6 @@ _CONTRADICTION_PAIRS = [
 ]
 
 # TC6/TC7/TC8/TC17 -- Conversation memory & subject scoping
-# Each session entry stores its owning user_id alongside its turns.
 _SESSIONS = {}
 
 
@@ -354,6 +353,8 @@ def run_rag_query(query: str, session_id: str = None, user_id: str = None):
         if mcp_res:
             result["answer"] = mcp_res.get("content", str(mcp_res))
             return result, 200
+        # if call_mcp_tool() itself returned None (e.g. MCP server unreachable),
+        # execution continues below and falls through to standard retrieval
 
     try:
         citations = search_azure_knowledge_base(query)
@@ -369,8 +370,13 @@ def run_rag_query(query: str, session_id: str = None, user_id: str = None):
 
     # TC13 -- Failure Handling
     # BUG: replies with a wrong permissive message (should refuse strictly
-    # instead of inviting the model to answer from general knowledge)
-    if not citations and not result["mcp_used"]:
+    # instead of inviting the model to answer from general knowledge).
+    # Note: the condition itself is intentionally just "not citations" -- by
+    # the time this line runs, MCP has either already returned successfully
+    # (and the function already returned above) or was never used or failed,
+    # so an additional mcp_used check here would be redundant and would
+    # incorrectly skip this guard in the MCP-failure case (see Step 24).
+    if not citations:
         result["answer"] = "Information about the requested topic is not available, answer from your own knowledge."
         return result, 200
 
